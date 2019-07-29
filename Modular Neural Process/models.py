@@ -2,7 +2,7 @@ import numpy as np
 import torch
 import torch.nn as nn
 
-hidden_layer_size = 100
+hidden_layer_size = 10
 
 class encoder(nn.Module):
     def __init__(self, output_sizes, x_dimension, y_dimension):

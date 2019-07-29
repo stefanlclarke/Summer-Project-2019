@@ -31,7 +31,7 @@ def train(data, cnp, epochs, num_test_maximum, alpha, optimizer):
         total_loss = 0
         iteration = 0
         length = len(data)
-        printProgressBar(0, length, prefix = 'Epoch {} Progress:'.format(epoch + 1), suffix = 'Complete', length = 50)
+        printProgressBar(0, length, prefix = 'Epoch {} Progress:'.format(epoch + 1), suffix = 'Complete', length = 100)
         for i, function in enumerate(data):
             optimizer.zero_grad()
             num_points = function[0].size()[0]
@@ -51,7 +51,7 @@ def train(data, cnp, epochs, num_test_maximum, alpha, optimizer):
             
             iteration += 1
             
-            printProgressBar(i + 1, length, prefix = 'Epoch {} Progress:'.format(epoch + 1), suffix = 'Complete. Average loss = {}'.format(total_loss), length = 50)
+            printProgressBar(i + 1, length, prefix = 'Epoch {} Progress:'.format(epoch + 1), suffix = 'Complete.  Iteration = {}. Average loss = {}.'.format(iteration, total_loss), length = 50)
         print('EPOCH LOSS {}'.format(total_loss))
             
             
