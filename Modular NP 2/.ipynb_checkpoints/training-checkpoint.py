@@ -47,7 +47,7 @@ def train(data, cnp, epochs, num_test_maximum, alpha, optimizer, f=None, f_every
             loss.backward()
             optimizer.step()
     
-            total_loss = total_loss + loss/len(data)
+            total_loss += loss/len(data)
             
             iteration += 1
             
