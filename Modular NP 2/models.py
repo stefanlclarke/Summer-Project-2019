@@ -4,6 +4,11 @@ import torch.nn as nn
 
 hidden_layer_size = 100
 
+def outputSize(in_size, kernel_size, stride, padding):
+    output = int((in_size - kernel_size + 2*(padding)) / stride) + 1
+    return(output)
+
+
 class encoder(nn.Module):
     def __init__(self, output_sizes, x_dimension, y_dimension):
         super(encoder, self).__init__()
@@ -80,3 +85,41 @@ class decoder(nn.Module):
         dist = torch.distributions.Normal(out_mu, out_sigma)
         
         return out_mu, out_sigma, dist
+    
+    
+class convlayers(nn.Module):
+    def __init__(self, input_dimension, output_dimension):
+        super(convlayers, self).__init__()
+        self.convdim = outputSize(outputSize(input_dimension, 2, 2, 0), 2, 2, 0)
+        self.conv1 = nn.Conv2d(1, 1, kernel_size=3, stride=1, padding=1)
+        self.pool1 = nn.MaxPool2d(kernel_size=2, stride=2, padding=0)
+        self.conv2 = nn.Conv2d(1, 1, kernel_size=3, stride=1, padding=1)
+        self.pool2 = nn.MaxPool2d(kernel_size=2, stride=2, padding=0)
+        self.fc1 = nn.Linear(self.convdim**2, self.output_dimension)
+        self.relu = nn.ReLU()
+        
+    def forward(self, x):
+        #x shape([1, 1, input_dimension, input_dimension])
+        l1 = self.pool1(self.relu(self.conv1(x)))
+        l2 = self.pool2(self.relu(self.conv2(l2)))
+        l2 = l2.view(1, self.convdim**2)
+        l3 = self.fc1(l2)
+        return l3
+    
+class deconvlayers(nn.Module):
+    def __init__(self, input_dimension, output_dimension):
+        super(deconvlayers, self).__init__()
+        self.insize = outputSize(outputSize(output_dimension, 2, 2, 0), 2, 2, 0)
+        self.fc1 = nn.Linear(input_dimension, self.insize**2)
+        self.unpool1 = nn.MaxUnpool2d(kernel_size=2, stride=2, padding=0)
+        self.deconv1 = nn.ConvTranspose2d(1, 1, kernel_size=3, stride=1, padding=1)
+        self.unpool2 = nn.MaxUnpool2d(kernel_size=2, stride=2, padding=0)
+        self.deconv2 = nn.ConvTranspose2d(1, 1, kernel_size=3, stride=1, padding=1)
+        self.relu = nn.ReLU()
+        
+    def forward(self, x):
+        l1 = self.relu(self.fc1(x))
+        l1 = l1.view(1, 1, self.insize, self.insize)
+        l2 = self.relu(self.deconv1(self.unpool1(l1)))
+        l3 = self.relu(self.deconv2(self.unpool2(l2)))
+        return l3

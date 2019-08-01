@@ -1,7 +1,11 @@
 import numpy as np
 import torch
 import torch.nn as nn
-from models import encoder, r_to_z, decoder
+from models import encoder, r_to_z, decoder, convlayers, deconvlayers
+
+def outputSize(in_size, kernel_size, stride, padding):
+    output = int((in_size - kernel_size + 2*(padding)) / stride) + 1
+    return(output)
 
 class NP(nn.Module):
     def __init__(self, encoded_size, x_dim, y_dim):
@@ -33,3 +37,17 @@ class NP(nn.Module):
             log_p = None
             MSE = None
         return mu, sigma, log_p, en_dist, t_en_dist, MSE
+
+
+class Image_Generator(nn.Module):
+    def __init__(self, image_size, encoded_size):
+        super(ConvNP, self).__init__()
+        self.image_size = image_size
+        self.encoded_size = encoded_size
+        self.convlayers = convlayers(image_size, 40)
+        self.np = NP(encoded_size, 1, 1)
+        self.deconvlayers = deconvlayers(40, image_size)
+        
+        def forward(self, context_x, context_y, target_x, target_y=None):
+            pass
+            
