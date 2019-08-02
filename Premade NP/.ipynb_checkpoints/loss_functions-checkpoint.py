@@ -28,9 +28,9 @@ def MMD(q_target, q_context, num_samples):
     return (t_kernel + c_kernel - ct_kernel).mean()
 
 def ELBO(p_y_pred, y_target, q_target, q_context, alpha):
-    result =  -alpha * log_likelihood1(p_y_pred, y_target) + (1 - alpha) * kl_div(q_target, q_context)
+    result =  - log_likelihood1(p_y_pred, y_target) + alpha*kl_div(q_target, q_context)
     return result
 
 def MMD_ELBO(p_y_pred, y_target, q_target, q_context, alpha):
-    result =  -alpha*log_likelihood1(p_y_pred, y_target) + (1 - alpha)*MMD(q_target, q_context, 10)
+    result =  - log_likelihood1(p_y_pred, y_target) + alpha*MMD(q_target, q_context, 10)
     return result

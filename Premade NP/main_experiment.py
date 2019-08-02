@@ -51,6 +51,8 @@ np_trainer = NeuralProcessTrainer(device, np_img, optimizer,
                                   num_context_range, num_extra_target_range,
                                   print_freq=100)
 
+
+'''
 for epoch in range(epochs):
     print("Epoch {}".format(epoch + 1))
     np_trainer.train(data_loader, 1)
@@ -59,3 +61,4 @@ for epoch in range(epochs):
         json.dump(np_trainer.epoch_loss_history, f)
     # Save model at every epoch
     torch.save(np_trainer.neural_process.state_dict(), directory + '/model.pt')
+'''

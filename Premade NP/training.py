@@ -36,13 +36,14 @@ class NeuralProcessTrainer():
         Frequency with which to print loss information during training.
     """
     def __init__(self, device, neural_process, optimizer, num_context_range,
-                 num_extra_target_range, print_freq=100, alpha = 0.5):
+                 num_extra_target_range, print_freq=100, alpha = 0.5, MMD=True):
         self.device = device
         self.neural_process = neural_process
         self.optimizer = optimizer
         self.num_context_range = num_context_range
         self.num_extra_target_range = num_extra_target_range
         self.print_freq = print_freq
+        self.MMD = MMD
 
         # Check if neural process is for images
         self.is_img = isinstance(self.neural_process, NeuralProcessImg)
@@ -97,8 +98,8 @@ class NeuralProcessTrainer():
                         context_target_split(x, y, num_context, num_extra_target)
                     p_y_pred, q_target, q_context = \
                         self.neural_process(x_context, y_context, x_target, y_target)
-
-                loss = self._loss(p_y_pred, y_target, q_target, q_context)
+                
+                loss = self._loss(p_y_pred, y_target, q_target, q_context, MMD)
                 loss.backward()
                 self.optimizer.step()
 
@@ -108,7 +109,7 @@ class NeuralProcessTrainer():
 
                 if self.steps % self.print_freq == 0:
                     print("iteration {}, loss {:.3f}".format(self.steps, loss.item()))
-
+            
             print("Epoch: {}, Avg_loss: {}".format(epoch, epoch_loss / len(data_loader)))
             self.epoch_loss_history.append(epoch_loss / len(data_loader))
             
@@ -125,15 +126,22 @@ class NeuralProcessTrainer():
 
             plt.scatter(x_context_plot[0].numpy(), y_context_plot[0].numpy(), c='k')
             
-            #plt.savefig('alpha{}epoch{}.png'.format(self.alpha, epoch))
-            plt.show()
+            if self.MMD == True:
+                st = 'MMD'
+            else:
+                st = 'KLD'
+            
+            plt.savefig('./Plots/{}alpha{}epoch{}.png'.format(st, self.alpha, epoch))
+            plt.clf()
             
             plt.plot(self.x_target_plot.numpy()[0], std.numpy()[0], c='b')
-            plt.show()
+            plt.savefig('./Plots/{}alpha{}epoch{}_variance.png'.format(st, self.alpha, epoch))
+            plt.clf()
             
             self.neural_process.training = True
+            
 
-    def _loss(self, p_y_pred, y_target, q_target, q_context):
+    def _loss(self, p_y_pred, y_target, q_target, q_context, MMD):
         """
         Computes Neural Process loss.
 
@@ -151,5 +159,8 @@ class NeuralProcessTrainer():
         q_context : one of torch.distributions.Distribution
             Latent distribution for context points.
         """
-        result = loss_functions.ELBO(p_y_pred, y_target, q_target, q_context, self.alpha)
+        if MMD == True:
+            result = loss_functions.MMD_ELBO(p_y_pred, y_target, q_target, q_context, self.alpha)
+        else:
+            result = loss_functions.ELBO(p_y_pred, y_target, q_target, q_context, self.alpha)
         return result

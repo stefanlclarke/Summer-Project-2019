@@ -25,7 +25,7 @@ def lossf(log_p, z_prior, context_z_posterior, test_z_posterior, alpha, MSE):
     return -log_p + alpha*kld
 
 
-def train(data, cnp, epochs, num_test_maximum, alpha, optimizer, f=None, f_every=None):
+def train(data, cnp, epochs, num_test_maximum, alpha, optimizer):
     cnp.train()
     for epoch in range(epochs):
         total_loss = 0
@@ -47,14 +47,9 @@ def train(data, cnp, epochs, num_test_maximum, alpha, optimizer, f=None, f_every
             loss.backward()
             optimizer.step()
     
-            total_loss += loss/len(data)
+            total_loss = total_loss + loss/len(data)
             
             iteration += 1
-            
-            if f is not None:
-                if iteration % f_every == -1:
-                    print(iteration)
-                    f()
             
             printProgressBar(i + 1, length, prefix = 'Epoch {} Progress:'.format(epoch + 1), suffix = 'Complete.  Iteration = {}. Average loss = {}.'.format(iteration, total_loss), length = 50)
         print('EPOCH LOSS {}'.format(total_loss))
