@@ -61,7 +61,7 @@ class MuSigmaEncoder(nn.Module):
     z_dim : int
         Dimension of latent variable z.
     """
-    def __init__(self, r_dim, z_dim):
+    def __init__(self, r_dim, z_dim, fixed_sigma=False, sigma_val=1.):
         super(MuSigmaEncoder, self).__init__()
 
         self.r_dim = r_dim
@@ -70,6 +70,9 @@ class MuSigmaEncoder(nn.Module):
         self.r_to_hidden = nn.Linear(r_dim, r_dim)
         self.hidden_to_mu = nn.Linear(r_dim, z_dim)
         self.hidden_to_sigma = nn.Linear(r_dim, z_dim)
+        
+        self.fixed_sigma = fixed_sigma
+        self.sigma_val = sigma_val
 
     def forward(self, r):
         """
@@ -80,7 +83,10 @@ class MuSigmaEncoder(nn.Module):
         mu = self.hidden_to_mu(hidden)
         # Define sigma following convention in "Empirical Evaluation of Neural
         # Process Objectives" and "Attentive Neural Processes"
-        sigma = 0.1 + 0.9 * torch.sigmoid(self.hidden_to_sigma(hidden))
+        if self.fixed_sigma == False:
+            sigma = 0.1 + 0.9 * torch.sigmoid(self.hidden_to_sigma(hidden))
+        else:
+            sigma = self.sigma_val
         return mu, sigma
 
 

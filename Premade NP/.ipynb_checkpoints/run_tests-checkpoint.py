@@ -23,7 +23,7 @@ h_dim = 50  # Dimension of hidden layers in encoder and decoder
 neuralprocess = NeuralProcess(x_dim, y_dim, r_dim, z_dim, h_dim)
 
 from torch.utils.data import DataLoader
-from training import NeuralProcessTrainer
+from original_training import NeuralProcessTrainer
 
 from utils import context_target_split
 batch_size = 2
@@ -62,7 +62,7 @@ for a in range(5):
 
     neuralprocess.training = True
     np_trainer.train(data_loader, 30, x_context, y_context)
-'''
+
 for a in range(5):
     alpha = 2**a/5
     neuralprocess = NeuralProcess(x_dim, y_dim, r_dim, z_dim, h_dim)
@@ -77,3 +77,23 @@ for a in range(5):
 
     neuralprocess.training = True
     np_trainer.train(data_loader, 30, x_context, y_context)
+'''
+
+
+for a in range(5):
+    alpha = 2**a/5
+    for v in range(5):
+        sigma = 2**v/5
+        neuralprocess = NeuralProcess(x_dim, y_dim, r_dim, z_dim, h_dim, True, sigma)
+
+        optimizer = torch.optim.Adam(neuralprocess.parameters(), lr=3e-4)
+        np_trainer = NeuralProcessTrainer(device, neuralprocess, optimizer,
+                                          num_context_range=(num_context, num_context),
+                                          num_extra_target_range=(num_target, num_target), 
+                                          print_freq=200, alpha=alpha, MMD=False, 
+                                          fixed_sigma=True, sig = sigma)
+
+
+
+        neuralprocess.training = True
+        np_trainer.train(data_loader, 30, x_context, y_context)

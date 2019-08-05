@@ -54,7 +54,7 @@ class NeuralProcessTrainer():
         #for plotting while trianing
         self.x_target_plot = torch.Tensor(np.linspace(-pi, pi, 100)).unsqueeze(1).unsqueeze(0)
 
-    def train(self, data_loader, epochs, x_context_plot, y_context_plot):
+    def train(self, data_loader, epochs):
         """
         Trains Neural Process.
 
@@ -114,7 +114,7 @@ class NeuralProcessTrainer():
             self.epoch_loss_history.append(epoch_loss / len(data_loader))
             
             self.neural_process.training = False
-
+            '''
             for i in range(64):
                 # Neural process returns distribution over y_target
                 p_y_pred = self.neural_process(x_context_plot, y_context_plot, self.x_target_plot)
@@ -139,7 +139,7 @@ class NeuralProcessTrainer():
             plt.clf()
             
             self.neural_process.training = True
-            
+            '''
 
     def _loss(self, p_y_pred, y_target, q_target, q_context, MMD):
         """

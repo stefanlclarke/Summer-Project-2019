@@ -26,7 +26,7 @@ class NeuralProcess(nn.Module):
     h_dim : int
         Dimension of hidden layer in encoder and decoder.
     """
-    def __init__(self, x_dim, y_dim, r_dim, z_dim, h_dim):
+    def __init__(self, x_dim, y_dim, r_dim, z_dim, h_dim, fixed_sigma=False, sigmaval=1.):
         super(NeuralProcess, self).__init__()
         self.x_dim = x_dim
         self.y_dim = y_dim
@@ -36,7 +36,7 @@ class NeuralProcess(nn.Module):
 
         # Initialize networks
         self.xy_to_r = Encoder(x_dim, y_dim, h_dim, r_dim)
-        self.r_to_mu_sigma = MuSigmaEncoder(r_dim, z_dim)
+        self.r_to_mu_sigma = MuSigmaEncoder(r_dim, z_dim, fixed_sigma, sigmaval)
         self.xz_to_y = Decoder(x_dim, z_dim, h_dim, y_dim)
 
     def aggregate(self, r_i):
