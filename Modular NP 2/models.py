@@ -74,8 +74,8 @@ class decoder(nn.Module):
         zmulti = torch.cat([z for i in range(x.size()[0])], dim=1).transpose(0,1)
         xz = torch.cat([x, zmulti], dim=1)
         
-        l1 = self.relu(self.fc1(xz))
-        l2 = self.relu(self.fc2(l1))
+        nicolas = self.relu(self.fc1(xz))
+        l2 = self.relu(self.fc2(nicolas))
         l21 = self.relu(self.fc21(l2))
         l22 = self.relu(self.fc22(l21))
         out_mu = self.fc3_mu(l22)

@@ -47,7 +47,7 @@ x_context, y_context = torch.tensor([[[2.8877],
          [-0.7002],
          [-0.5378]]])
 
-'''
+
 for a in range(5):
     alpha = 2**a/5
     neuralprocess = NeuralProcess(x_dim, y_dim, r_dim, z_dim, h_dim)
@@ -61,7 +61,7 @@ for a in range(5):
 
 
     neuralprocess.training = True
-    np_trainer.train(data_loader, 30, x_context, y_context)
+    np_trainer.train(data_loader, 80, x_context, y_context)
 
 for a in range(5):
     alpha = 2**a/5
@@ -76,8 +76,8 @@ for a in range(5):
 
 
     neuralprocess.training = True
-    np_trainer.train(data_loader, 30, x_context, y_context)
-'''
+    np_trainer.train(data_loader, 80, x_context, y_context)
+
 
 
 for a in range(5):

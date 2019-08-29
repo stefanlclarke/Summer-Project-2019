@@ -139,11 +139,11 @@ class NeuralProcessTrainer():
                 ss = None
             
             
-            plt.savefig('./NewPlots/{}{}alpha{}epoch{}.png'.format(ss, st, self.alpha, epoch))
+            plt.savefig('./NewNewPlots/{}{}alpha{}epoch{}.png'.format(ss, st, self.alpha, epoch))
             plt.clf()
             
             plt.plot(self.x_target_plot.numpy()[0], std.numpy()[0], c='b')
-            plt.savefig('./NewPlots/{}{}alpha{}epoch{}_variance.png'.format(ss, st, self.alpha, epoch))
+            plt.savefig('./NewNewPlots/{}{}alpha{}epoch{}_variance.png'.format(ss, st, self.alpha, epoch))
             plt.clf()
             
             self.neural_process.training = True

@@ -35,4 +35,4 @@ def MMD_ELBO(p_y_pred, y_target, q_target, q_context, alpha):
     result =  - log_likelihood1(p_y_pred, y_target) + alpha*MMD(q_target, q_context, 10)
     return result
 
-def info_vae()
+#def info_vae()

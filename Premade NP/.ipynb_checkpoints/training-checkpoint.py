@@ -114,32 +114,34 @@ class NeuralProcessTrainer():
             self.epoch_loss_history.append(epoch_loss / len(data_loader))
             
             self.neural_process.training = False
-            '''
-            for i in range(64):
-                # Neural process returns distribution over y_target
-                p_y_pred = self.neural_process(x_context_plot, y_context_plot, self.x_target_plot)
-                # Extract mean of distribution
-                mu = p_y_pred.loc.detach()
-                std = p_y_pred.stddev.detach()
-                plt.plot(self.x_target_plot.numpy()[0], mu.numpy()[0], alpha=0.05,
-                         c='b')
+            
+            
+            if epoch % 5 == 0:
+                for i in range(64):
+                    # Neural process returns distribution over y_target
+                    p_y_pred = self.neural_process(x_context_plot, y_context_plot, self.x_target_plot)
+                    # Extract mean of distribution
+                    mu = p_y_pred.loc.detach()
+                    std = p_y_pred.stddev.detach()
+                    plt.plot(self.x_target_plot.numpy()[0], mu.numpy()[0], alpha=0.05,
+                             c='b')
 
-            plt.scatter(x_context_plot[0].numpy(), y_context_plot[0].numpy(), c='k')
-            
-            if self.MMD == True:
-                st = 'MMD'
-            else:
-                st = 'KLD'
-            
-            plt.savefig('./Plots/{}alpha{}epoch{}.png'.format(st, self.alpha, epoch))
-            plt.clf()
-            
-            plt.plot(self.x_target_plot.numpy()[0], std.numpy()[0], c='b')
-            plt.savefig('./Plots/{}alpha{}epoch{}_variance.png'.format(st, self.alpha, epoch))
-            plt.clf()
+                plt.scatter(x_context_plot[0].numpy(), y_context_plot[0].numpy(), c='k')
+
+                if self.MMD == True:
+                    st = 'MMD'
+                else:
+                    st = 'KLD'
+
+                plt.savefig('./NewNewPlots/{}alpha{}epoch{}.png'.format(st, self.alpha, epoch))
+                plt.clf()
+
+                plt.plot(self.x_target_plot.numpy()[0], std.numpy()[0], c='b')
+                plt.savefig('./NewNewPlots/{}alpha{}epoch{}_variance.png'.format(st, self.alpha, epoch))
+                plt.clf()
             
             self.neural_process.training = True
-            '''
+            
 
     def _loss(self, p_y_pred, y_target, q_target, q_context, MMD):
         """
